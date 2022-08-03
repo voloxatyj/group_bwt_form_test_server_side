@@ -24,8 +24,8 @@ async function bootstrap() {
 
   const logger = app.get(Logger);
   app.setGlobalPrefix('api');
-  const { SERVER_PORT } = dotenv.config().parsed;
-  await app.listen(SERVER_PORT || 5000);
+  // const { SERVER_PORT } = dotenv.config().parsed;
+  await app.listen(process.env.SERVER_PORT || 5000);
   logger.log(`Application listening at ${await app.getUrl()}`);
 }
 bootstrap();
