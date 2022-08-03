@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { HttpExceptionFilter } from './utility/http-exception';
 import * as dotenv from 'dotenv';
 
@@ -24,8 +24,8 @@ async function bootstrap() {
 
   const logger = app.get(Logger);
   app.setGlobalPrefix('api');
-  // const { SERVER_PORT } = dotenv.config().parsed;
-  await app.listen(process.env.SERVER_PORT || 5000);
+  const { PORT } = dotenv.config().parsed;
+  await app.listen(PORT || 5000);
   logger.log(`Application listening at ${await app.getUrl()}`);
 }
 bootstrap();
