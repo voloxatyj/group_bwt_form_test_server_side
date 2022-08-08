@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Req,
   Res,
 } from '@nestjs/common';
 import {
@@ -55,7 +54,6 @@ export class MemberController {
   async updateMember(
     @Param('id', ParseIntPipe) id: number,
     @Body() info: updateMemberDTO,
-    @Req() req: Request,
     @Res() res: FastifyReply,
   ): Promise<IUserInfo | any> {
     try {
