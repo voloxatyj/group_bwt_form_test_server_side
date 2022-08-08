@@ -1,13 +1,23 @@
-import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './utility/http-exception';
+import { HttpExceptionFilter } from './utils/http-exceptions/http-exception';
+import { MongooseModule } from '@nestjs/mongoose';
 import { MemberModule } from './member/member.module';
 import { ConfigModule } from './config/config.module';
-import { LoggerMiddleware } from './middleware/logger.middleware';
 import { CountryModule } from './country/country.module';
+import * as dotenv from 'dotenv';
+
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = dotenv.config().parsed;
 
 @Module({
-  imports: [MemberModule, CountryModule, ConfigModule],
+  imports: [
+    MemberModule,
+    CountryModule,
+    ConfigModule,
+    MongooseModule.forRoot(
+      `${DB_HOST}://${DB_USER}:${DB_PASSWORD}@${DB_DATABASE}.22wew8y.mongodb.net/?retryWrites=true&w=majority`,
+    ),
+  ],
   providers: [
     Logger,
     {
@@ -16,8 +26,4 @@ import { CountryModule } from './country/country.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('members', 'countries');
-  }
-}
+export class AppModule {}

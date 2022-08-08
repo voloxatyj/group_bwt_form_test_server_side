@@ -1,14 +1,13 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpException,
-  HttpStatus,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
@@ -19,6 +18,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { FastifyReply } from 'fastify';
 import { createMemberDTO, updateMemberDTO } from './dto/member.dto';
 import { IUser, IUserInfo, IMember } from './interfaces/member.interface';
 import { MemberService } from './member.service';
@@ -30,9 +30,9 @@ export class MemberController {
   @Get('')
   @ApiCreatedResponse({ description: 'Get All Members' })
   @ApiBadRequestResponse({ description: 'No members data' })
-  async getMembers(@Res() res: Response): Promise<IMember[] | any> {
-    const response = await this.memberService.getMembers();
-    res.send(response);
+  async getMembers(@Res() res: FastifyReply): Promise<IMember[] | any> {
+    const members = await this.memberService.getMembers();
+    res.send({ data: members });
   }
 
   @Post('')
@@ -41,10 +41,14 @@ export class MemberController {
   @ApiBody({ type: createMemberDTO })
   async createMember(
     @Body() member: createMemberDTO,
-    @Res() res: Response,
+    @Res() res: FastifyReply,
   ): Promise<IUser | any> {
-    const response = await this.memberService.createMember(member);
-    res.send(response);
+    try {
+      const response = await this.memberService.createMember(member);
+      res.send(response);
+    } catch (error) {
+      Logger.error(error);
+    }
   }
 
   @Patch(':id')
@@ -54,9 +58,15 @@ export class MemberController {
   async updateMember(
     @Param('id', ParseIntPipe) id: number,
     @Body() info: updateMemberDTO,
-    @Res() res: Response,
+    @Req() req: Request,
+    @Res() res: FastifyReply,
   ): Promise<IUserInfo | any> {
-    const response = await this.memberService.updateMember(id, info);
-    res.send(response);
+    try {
+      const response = await this.memberService.updateMember(id, info);
+      res.send(response);
+    } catch (error) {
+      Logger.error(error);
+      return { error: error.cause, status: error.status };
+    }
   }
 }

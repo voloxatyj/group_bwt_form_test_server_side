@@ -1,16 +1,37 @@
 import { NestFactory } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
-import { HttpExceptionFilter } from './utility/http-exception';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './utils/http-exceptions/http-exception';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as morgan from 'morgan';
+
+const logStream = fs.createWriteStream('api.log', {
+  flags: 'a',
+});
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({
+      logger: true,
+    }),
+  );
   app.enableCors();
 
   // Http Error Handler
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Set Validation to Global
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  // Set HTTP request logger
+  app.use(morgan('tiny', { stream: logStream }));
 
   // Swagger
   const options = new DocumentBuilder()
@@ -23,9 +44,10 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   const logger = app.get(Logger);
+  const { PORT, HOST } = dotenv.config().parsed;
+
   app.setGlobalPrefix('api');
-  // const { PORT } = dotenv.config().parsed;
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(PORT, HOST);
   logger.log(`Application listening at ${await app.getUrl()}`);
 }
 bootstrap();

@@ -21,7 +21,7 @@ export class CountryController {
     const countries = await this.countryService.getCountries();
 
     if (countries.length !== 0) {
-      res.send(countries);
+      res.send({ countries });
     } else {
       throw new HttpException(
         "We don't get any countries",

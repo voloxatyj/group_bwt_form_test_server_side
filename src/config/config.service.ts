@@ -20,10 +20,6 @@ export class ConfigService {
     return this.get('SERVER_PORT');
   }
 
-  public async getHostConfig() {
-    return this.get('SERVER_HOST');
-  }
-
   public async getApiUrl() {
     return this.get('API_URL');
   }

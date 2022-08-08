@@ -24,3 +24,10 @@ export interface IMember extends IUser, IUserInfo {
   deleted_at?: null;
   updated_at?: string;
 }
+
+export enum ImageType {
+  JPEG = 'image/jpeg',
+  JPG = 'image/jpg',
+  PNG = 'image/png',
+  GIF = 'image/gif',
+}

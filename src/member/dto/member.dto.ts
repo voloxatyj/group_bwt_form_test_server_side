@@ -1,74 +1,84 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
-  Min,
-  Max,
   IsInt,
   IsString,
   IsOptional,
+  IsNotEmpty,
+  MinLength,
+  MaxLength,
+  IsEnum,
 } from 'class-validator';
+import { ImageType } from '../interfaces/member.interface';
 
 export class createMemberDTO {
+  @IsNotEmpty()
   @IsString()
-  @Min(3)
-  @Max(10)
+  @MinLength(3)
+  @MaxLength(10)
   @ApiProperty({ type: String, description: 'firstname' })
   firstname: string;
 
   @IsString()
-  @Min(3)
-  @Max(10)
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(10)
   @ApiProperty({ type: String, description: 'lastname' })
   lastname: string;
 
   @IsString()
-  @Min(10)
+  @IsNotEmpty()
+  @MinLength(10)
   @ApiProperty({ type: String, description: 'birthdate' })
   birthdate: string;
 
   @IsString()
-  @Min(5)
-  @Max(100)
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(100)
   @ApiProperty({ type: String, description: 'report_subject' })
   report_subject: string;
 
   @IsString()
-  @Min(17)
+  @IsNotEmpty()
+  @MinLength(17)
   @ApiProperty({ type: String, description: 'phone' })
   phone: string;
 
   @IsString()
+  @IsNotEmpty()
   @IsEmail()
-  @Min(6)
+  @MinLength(6)
   @ApiProperty({ type: String, description: 'email' })
   email: string;
 
   @IsInt()
+  @IsNotEmpty()
   @ApiProperty({ type: Number, description: 'country_id' })
   country_id: number;
 }
 
 export class updateMemberDTO {
   @IsString()
-  @Max(100)
+  @MaxLength(100)
   @IsOptional()
   @ApiProperty({ type: String, description: 'aboutMe' })
   aboutMe: string;
 
   @IsString()
-  @Max(100)
+  @MaxLength(100)
   @IsOptional()
   @ApiProperty({ type: String, description: 'company' })
   company: string;
 
   @IsString()
-  @Max(20)
+  @MaxLength(20)
   @IsOptional()
   @ApiProperty({ type: String, description: 'position' })
   position: string;
 
   @IsString()
-  @Max(20)
+  @MinLength(10)
   @IsOptional()
   @ApiProperty({ type: String, description: 'photo_url' })
   photo_url: string;
@@ -80,6 +90,7 @@ export class updateMemberDTO {
 
   @IsString()
   @IsOptional()
+  @IsEnum(ImageType)
   @ApiProperty({ type: String, description: 'photo_ext' })
   photo_ext: string;
 

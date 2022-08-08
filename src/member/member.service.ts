@@ -1,51 +1,62 @@
-import { ConfigService } from '../config/config.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { IMember, IUser, IUserInfo } from './interfaces/member.interface';
-import axios from 'axios';
 
-@Injectable({})
+@Injectable()
 export class MemberService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(@InjectModel('Member') private MemberModel: Model<IMember>) {}
 
   public async getMembers(): Promise<IMember[]> {
     try {
-      const api_url = await this.configService.getApiUrl();
+      const db_members = await this.MemberModel;
+      const members = await db_members.find();
 
-      const { data } = await axios.get(`${api_url}/members`);
-
-      return data as IMember[];
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async createMember(member: IUser) {
-    try {
-      const api_url = await this.configService.getApiUrl();
-
-      const { data } = await axios.post(`${api_url}/members`, member);
-
-      return data as IUser;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async updateMember(id: number, info: IUserInfo): Promise<IUserInfo> {
-    try {
-      const api_url = await this.configService.getApiUrl();
-      let photo_hash = null;
-
-      if (info.photo_hash) {
-        photo_hash = Buffer.from(info.photo_hash, 'ascii');
+      if (members.length === 0) {
+        return [];
       }
 
-      const { data } = await axios.patch(`${api_url}/members/${id}`, {
-        ...info,
-        photo_hash,
+      return members;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  public async createMember(member: IUser, id?: number) {
+    try {
+      const db_members = await this.MemberModel;
+      const index = (id || (await db_members.find().countDocuments())) + 1;
+      const isIDexist = await db_members.find({ id: index });
+
+      if (isIDexist.length !== 0) this.createMember(member, id);
+
+      const emailIsExist = await db_members.find({ email: member.email });
+
+      if (emailIsExist.length > 0)
+        throw new HttpException('email already exists', HttpStatus.BAD_REQUEST);
+
+      const createMember = await db_members.create({
+        id: index,
+        ...member,
       });
 
-      return data as IUserInfo;
+      const result = await createMember.save();
+      return result;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async updateMember(id: number, info: IUserInfo) {
+    try {
+      const db_members = await this.MemberModel;
+
+      const member = await db_members.findOneAndUpdate({ id }, info, {
+        new: true,
+      });
+
+      if (member)
+        return { message: 'Member updated successfully', status: 201 };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
