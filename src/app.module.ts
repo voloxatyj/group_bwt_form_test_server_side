@@ -5,9 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MemberModule } from './member/member.module';
 import { ConfigModule } from './config/config.module';
 import { CountryModule } from './country/country.module';
-import * as dotenv from 'dotenv';
-
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = dotenv.config().parsed;
 
 @Module({
   imports: [
@@ -15,7 +12,7 @@ const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = dotenv.config().parsed;
     CountryModule,
     ConfigModule,
     MongooseModule.forRoot(
-      `${DB_HOST}://${DB_USER}:${DB_PASSWORD}@${DB_DATABASE}.22wew8y.mongodb.net/?retryWrites=true&w=majority`,
+      `mongodb+srv://admin:groupbwt@hVoSh3444rxVCyYi.22wew8y.mongodb.net/?retryWrites=true&w=majority`,
     ),
   ],
   providers: [
