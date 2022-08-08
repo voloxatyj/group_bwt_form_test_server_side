@@ -12,7 +12,7 @@ import { CountryModule } from './country/country.module';
     CountryModule,
     ConfigModule,
     MongooseModule.forRoot(
-      `mongodb+srv://admin:groupbwt@hVoSh3444rxVCyYi.22wew8y.mongodb.net/?retryWrites=true&w=majority`,
+      `mongodb+srv://admin:hVoSh3444rxVCyYi@groupbwt.22wew8y.mongodb.net/?retryWrites=true&w=majority`,
     ),
   ],
   providers: [
