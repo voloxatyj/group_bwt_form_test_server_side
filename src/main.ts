@@ -46,7 +46,7 @@ async function bootstrap() {
   const logger = app.get(Logger);
 
   app.setGlobalPrefix('api');
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(process.env.PORT || 5000, process.env.HOST);
   logger.log(`Application listening at ${await app.getUrl()}`);
 }
 bootstrap();
