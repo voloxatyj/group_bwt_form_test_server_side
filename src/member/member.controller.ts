@@ -9,15 +9,12 @@ import {
   Post,
   Req,
   Res,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiBody,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 import { FastifyReply } from 'fastify';
 import { createMemberDTO, updateMemberDTO } from './dto/member.dto';
 import { IUser, IUserInfo, IMember } from './interfaces/member.interface';
