@@ -44,10 +44,9 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   const logger = app.get(Logger);
-  const { PORT, HOST } = dotenv.config().parsed;
 
   app.setGlobalPrefix('api');
-  await app.listen(PORT, HOST);
+  await app.listen(process.env.PORT || 5000);
   logger.log(`Application listening at ${await app.getUrl()}`);
 }
 bootstrap();
