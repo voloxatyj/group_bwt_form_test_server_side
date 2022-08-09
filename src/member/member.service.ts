@@ -60,7 +60,7 @@ export class MemberService {
       const db_members = await this.MemberModel;
 
       if (
-        !info.photo_ext &&
+        !!info.photo_ext &&
         !(<any>Object).values(ImageType).includes(info.photo_ext)
       ) {
         throw new HttpException(
