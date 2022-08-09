@@ -15,14 +15,14 @@ export class createMemberDTO {
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
-  @MaxLength(10)
+  @MaxLength(20)
   @ApiProperty({ type: String, description: 'firstname' })
   firstname: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(10)
+  @MaxLength(20)
   @ApiProperty({ type: String, description: 'lastname' })
   lastname: string;
 

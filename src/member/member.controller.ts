@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import {
@@ -27,8 +28,13 @@ export class MemberController {
   @ApiCreatedResponse({ description: 'Get All Members' })
   @ApiBadRequestResponse({ description: 'No members data' })
   async getMembers(@Res() res: FastifyReply): Promise<IMember[] | any> {
-    const members = await this.memberService.getMembers();
-    res.send({ data: members });
+    try {
+      const members = await this.memberService.getMembers();
+      res.send({ data: members });
+    } catch (error) {
+      res.send(error);
+      Logger.error(error);
+    }
   }
 
   @Post('')
@@ -43,6 +49,7 @@ export class MemberController {
       const response = await this.memberService.createMember(member);
       res.send(response);
     } catch (error) {
+      res.send(error);
       Logger.error(error);
     }
   }
@@ -54,14 +61,15 @@ export class MemberController {
   async updateMember(
     @Param('id', ParseIntPipe) id: number,
     @Body() info: updateMemberDTO,
+    @Req() req: Request,
     @Res() res: FastifyReply,
   ): Promise<IUserInfo | any> {
     try {
       const response = await this.memberService.updateMember(id, info);
       res.send(response);
     } catch (error) {
+      res.send(error);
       Logger.error(error);
-      return { error: error.cause, status: error.status };
     }
   }
 }

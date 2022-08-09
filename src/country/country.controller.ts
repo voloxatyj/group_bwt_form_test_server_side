@@ -1,11 +1,6 @@
-import {
-  Controller,
-  Get,
-  Res,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { Logger } from '@nestjs/common';
 import { ApiCreatedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { ICountry } from './dto/country.dto';
 import { CountryService } from './country.service';
@@ -18,15 +13,12 @@ export class CountryController {
   @ApiCreatedResponse({ description: 'Get All Countries' })
   @ApiBadRequestResponse({ description: "Can't get data of countries" })
   async getMembers(@Res() res: Response): Promise<ICountry[] | any> {
-    const countries = await this.countryService.getCountries();
-
-    if (countries.length !== 0) {
+    try {
+      const countries = await this.countryService.getCountries();
       res.send({ countries });
-    } else {
-      throw new HttpException(
-        "We don't get any countries",
-        HttpStatus.BAD_REQUEST,
-      );
+    } catch (error) {
+      res.send(error);
+      Logger.error(error);
     }
   }
 }

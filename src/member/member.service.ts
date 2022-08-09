@@ -33,7 +33,10 @@ export class MemberService {
       const emailIsExist = await db_members.find({ email: member.email });
 
       if (emailIsExist.length > 0)
-        throw new HttpException('email already exists', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Email already exists!',
+          HttpStatus.BAD_REQUEST,
+        );
 
       const createMember = await db_members.create({
         id: index,
@@ -56,7 +59,7 @@ export class MemberService {
       });
 
       if (member)
-        return { message: 'Member updated successfully', status: 201 };
+        return { message: 'Member Updated Successfully', status: 201 };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
