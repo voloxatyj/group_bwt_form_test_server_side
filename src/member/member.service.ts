@@ -59,7 +59,10 @@ export class MemberService {
     try {
       const db_members = await this.MemberModel;
 
-      if (!(<any>Object).values(ImageType).includes(info.photo_ext)) {
+      if (
+        !info.photo_ext &&
+        !(<any>Object).values(ImageType).includes(info.photo_ext)
+      ) {
         throw new HttpException(
           'Image must have a valid type. Such like .png, .jpeg, .jpg',
           HttpStatus.BAD_REQUEST,
