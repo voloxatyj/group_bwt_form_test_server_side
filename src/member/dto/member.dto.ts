@@ -7,9 +7,7 @@ import {
   IsNotEmpty,
   MinLength,
   MaxLength,
-  IsEnum,
 } from 'class-validator';
-import { ImageType } from '../interfaces/member.interface';
 
 export class createMemberDTO {
   @IsNotEmpty()
@@ -59,42 +57,30 @@ export class createMemberDTO {
 }
 
 export class updateMemberDTO {
-  @IsString()
-  @MaxLength(100)
   @IsOptional()
   @ApiProperty({ type: String, description: 'aboutMe' })
   aboutMe: string;
 
-  @IsString()
-  @MaxLength(100)
   @IsOptional()
   @ApiProperty({ type: String, description: 'company' })
   company: string;
 
-  @IsString()
-  @MaxLength(20)
   @IsOptional()
   @ApiProperty({ type: String, description: 'position' })
   position: string;
 
-  @IsString()
-  @MinLength(10)
   @IsOptional()
   @ApiProperty({ type: String, description: 'photo_url' })
   photo_url: string;
 
-  @IsString()
   @IsOptional()
   @ApiProperty({ type: String, description: 'photo_hash' })
   photo_hash: string;
 
-  @IsString()
   @IsOptional()
-  @IsEnum(ImageType)
   @ApiProperty({ type: String, description: 'photo_ext' })
   photo_ext: string;
 
-  @IsString()
   @IsOptional()
   @ApiProperty({ type: String, description: 'photo' })
   photo: string;

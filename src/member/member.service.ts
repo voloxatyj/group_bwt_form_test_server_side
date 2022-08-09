@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IMember, IUser, IUserInfo } from './interfaces/member.interface';
+import {
+  IMember,
+  IUser,
+  IUserInfo,
+  ImageType,
+} from './interfaces/member.interface';
 
 @Injectable()
 export class MemberService {
@@ -53,6 +58,13 @@ export class MemberService {
   public async updateMember(id: number, info: IUserInfo) {
     try {
       const db_members = await this.MemberModel;
+
+      if (!(<any>Object).values(ImageType).includes(info.photo_ext)) {
+        throw new HttpException(
+          'Image must have a valid type. Such like .png, .jpeg, .jpg',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       const member = await db_members.findOneAndUpdate({ id }, info, {
         new: true,
